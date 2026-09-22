@@ -1,0 +1,6 @@
+{
+  "name": "Potato Seed Stock & Cold Storage Management",
+  "description": "Enterprise Potato Seed Stock, Production, Cold Storage, Delivery, Reporting & Inventory Management System",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
