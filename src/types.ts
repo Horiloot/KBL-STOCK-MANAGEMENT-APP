@@ -258,6 +258,7 @@ export type NavigationTab =
   | 'reports-stock-in'
   | 'reports-stock-out'
   | 'reports-closing-stock'
+  | 'reports-in-out-all-records'
   | 'reports-stock-combined'
   | 'reports-stock'
   | 'reports-delivery'

@@ -26,6 +26,8 @@ import { exportToExcel, exportToPdf, validateAndTriggerPrint } from '../../utils
 import { sortData } from '../../utils/sortUtils';
 import { TablePagination } from '../common/TablePagination';
 import { PrintPreviewModal } from '../common/PrintPreviewModal';
+import { ReportButtonGroup } from '../common/ReportButtonGroup';
+import { DateRangePicker } from '../common/DateRangePicker';
 
 export const StockOutAllRecordsView: React.FC = () => {
   const {
@@ -236,34 +238,32 @@ export const StockOutAllRecordsView: React.FC = () => {
     addToast('Stock Outbound records exported to PDF!', 'success');
   };
 
+  const thPadding = density === 'compact' ? 'py-1 px-2.5 text-[10.5px]' : density === 'comfortable' ? 'py-2.5 px-3.5 text-xs' : 'py-1.5 px-3 text-[11px]';
+  const tdPadding = density === 'compact' ? 'py-1 px-2.5 text-[11px]' : density === 'comfortable' ? 'py-2.5 px-3.5 text-xs' : 'py-1.5 px-3 text-xs';
+
   const renderSortIndicator = (colKey: string) => {
     if (sortKey !== colKey) {
-      return <ArrowUpDown className="w-3 h-3 text-slate-400 group-hover:text-slate-600 transition-colors inline ml-1" />;
+      return <ArrowUpDown className="w-3 h-3 text-slate-400/70 group-hover:text-sky-300 inline ml-1" />;
     }
     return sortDir === 'asc' ? (
-      <ArrowUp className="w-3 h-3 text-sky-600 dark:text-sky-400 inline ml-1" />
+      <ArrowUp className="w-3.5 h-3.5 text-sky-400 bg-sky-950/60 p-0.5 rounded inline ml-1" />
     ) : (
-      <ArrowDown className="w-3 h-3 text-sky-600 dark:text-sky-400 inline ml-1" />
+      <ArrowDown className="w-3.5 h-3.5 text-sky-400 bg-sky-950/60 p-0.5 rounded inline ml-1" />
     );
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3 sm:space-y-3.5">
       {/* Header bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800 pb-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-4.5 bg-amber-500 rounded-xs" />
-            <h1 className="text-base sm:text-lg font-black tracking-wider text-slate-900 dark:text-white uppercase">
-              STOCK OUT ALL RECORDS
-            </h1>
-            <span className="px-2 py-0.5 text-[11px] font-bold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-              {filteredDeliveries.length} Dispatches
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Complete outbound dispatches, client consignments, gate passes, and cold storage withdrawals
-          </p>
+      <div className="flex items-center justify-between gap-3 pt-0.5 pb-1 border-b border-slate-200/60 dark:border-slate-800/60">
+        <div className="flex items-center gap-2">
+          <div className="w-1.5 h-4.5 bg-amber-500 rounded-xs" />
+          <h2 className="text-base sm:text-lg font-black tracking-wider text-slate-900 dark:text-white uppercase">
+            STOCK OUT ALL RECORDS
+          </h2>
+          <span className="px-2 py-0.5 text-[11px] font-bold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+            {filteredDeliveries.length} Dispatches
+          </span>
         </div>
 
         {/* Toolbar: Density & Export buttons */}
@@ -272,6 +272,7 @@ export const StockOutAllRecordsView: React.FC = () => {
           <div
             className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-2xs text-xs font-semibold"
             role="group"
+            aria-label="Table density toggle"
           >
             <button
               type="button"
@@ -308,31 +309,18 @@ export const StockOutAllRecordsView: React.FC = () => {
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={handleExportExcel}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-2xs cursor-pointer uppercase"
-            title="Export full filtered report to Excel"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">EXCEL</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsPreviewOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-colors shadow-2xs cursor-pointer uppercase"
-            title="Print Preview & PDF"
-          >
-            <Printer className="w-3.5 h-3.5 text-slate-500" />
-            <span className="hidden sm:inline">PRINT / PDF</span>
-          </button>
+          {/* Print and Export Button Group */}
+          <ReportButtonGroup
+            onPrint={() => setIsPreviewOpen(true)}
+            onExportExcel={handleExportExcel}
+            onExportPdf={handleExportPdf}
+          />
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">TOTAL STOCK OUT</span>
             <Truck className="w-4 h-4 text-amber-600" />
@@ -340,12 +328,9 @@ export const StockOutAllRecordsView: React.FC = () => {
           <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">
             {totalBags.toLocaleString()}
           </div>
-          <div className="text-[10px] font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
-            Delivered Sacks
-          </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">WEIGHT (MT)</span>
             <Scale className="w-4 h-4 text-sky-600" />
@@ -353,12 +338,9 @@ export const StockOutAllRecordsView: React.FC = () => {
           <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">
             {totalMt.toFixed(2)}
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            {(totalKg / 1000).toFixed(1)} Metric Tons
-          </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">DISPATCH ORDERS</span>
             <Layers className="w-4 h-4 text-indigo-600" />
@@ -366,12 +348,9 @@ export const StockOutAllRecordsView: React.FC = () => {
           <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">
             {filteredDeliveries.length}
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            Consignment Gate Passes
-          </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">CLIENTS</span>
             <User className="w-4 h-4 text-emerald-600" />
@@ -379,12 +358,9 @@ export const StockOutAllRecordsView: React.FC = () => {
           <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">
             {activeClientsCount}
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            Receiving Entities
-          </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">AVG / DISPATCH</span>
             <Scale className="w-4 h-4 text-teal-600" />
@@ -392,12 +368,9 @@ export const StockOutAllRecordsView: React.FC = () => {
           <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">
             {avgBagsPerOrder}
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            Bags per Truck Order
-          </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">STORAGES</span>
             <Warehouse className="w-4 h-4 text-purple-600" />
@@ -405,29 +378,24 @@ export const StockOutAllRecordsView: React.FC = () => {
           <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">
             {activeStoragesCount}
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            Dispatch Points
-          </div>
         </div>
       </div>
 
-      {/* Advanced Filter Box */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+      {/* Filter and Search Panel */}
+      <div className="bg-white dark:bg-slate-900 border border-sky-200/80 dark:border-slate-800 rounded-xl p-3 shadow-xs space-y-2.5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-sky-600" />
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-              COMPREHENSIVE DATA FILTER & SEARCH
-            </span>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+            <Filter className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+            <span>FILTERS</span>
           </div>
           {(searchQuery || selectedStorage || selectedVariety || selectedClass || selectedGrade || selectedClient || startDate || endDate) && (
             <button
               type="button"
               onClick={resetFilters}
-              className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 cursor-pointer"
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 cursor-pointer uppercase"
             >
               <RotateCcw className="w-3 h-3" />
-              <span>RESET FILTERS</span>
+              <span>RESET</span>
             </button>
           )}
         </div>
@@ -545,145 +513,105 @@ export const StockOutAllRecordsView: React.FC = () => {
           </div>
         </div>
 
-        {/* Date Range Row */}
-        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800 text-xs">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-            Dispatch Date Range:
-          </span>
-          <div className="flex items-center gap-1.5">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => {
-                setStartDate(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="py-1 px-2 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-sky-500"
-            />
-            <span className="text-slate-400">to</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => {
-                setEndDate(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="py-1 px-2 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-sky-500"
-            />
-          </div>
-
-          {/* Quick Date Presets */}
-          <div className="flex items-center gap-1 ml-auto">
-            <button
-              type="button"
-              onClick={() => {
-                setStartDate('');
-                setEndDate('');
-                setCurrentPage(1);
-              }}
-              className="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300"
-            >
-              ALL DATES
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setStartDate('2024-01-01');
-                setEndDate('2024-12-31');
-                setCurrentPage(1);
-              }}
-              className="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300"
-            >
-              SEASON 2024
-            </button>
-          </div>
+        {/* Date Range Picker Component */}
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            label="Dispatch Period:"
+            onChange={(start, end) => {
+              setStartDate(start);
+              setEndDate(end);
+              setCurrentPage(1);
+            }}
+          />
         </div>
       </div>
 
       {/* Main Table Container */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 border border-sky-200/90 dark:border-slate-800 rounded-xl shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left">
-            <thead>
-              <tr className="bg-slate-50/90 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider select-none">
+            <thead className="bg-slate-800 text-slate-100 dark:bg-slate-850 dark:text-white font-bold border-b-2 border-slate-900 dark:border-slate-700 select-none">
+              <tr>
                 <th
                   onClick={() => handleSort('date')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Date {renderSortIndicator('date')}
                 </th>
                 <th
                   onClick={() => handleSort('deliveryNo')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Delivery No {renderSortIndicator('deliveryNo')}
                 </th>
                 <th
                   onClick={() => handleSort('clientReceiver')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Client Receiver {renderSortIndicator('clientReceiver')}
                 </th>
                 <th
                   onClick={() => handleSort('destination')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Destination {renderSortIndicator('destination')}
                 </th>
                 <th
                   onClick={() => handleSort('storage')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   From Storage {renderSortIndicator('storage')}
                 </th>
                 <th
                   onClick={() => handleSort('variety')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Variety {renderSortIndicator('variety')}
                 </th>
                 <th
                   onClick={() => handleSort('class')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Class {renderSortIndicator('class')}
                 </th>
                 <th
                   onClick={() => handleSort('grade')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Grade {renderSortIndicator('grade')}
                 </th>
                 <th
                   onClick={() => handleSort('sackQuantity')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Bags Out {renderSortIndicator('sackQuantity')}
                 </th>
                 <th
                   onClick={() => handleSort('kgPerBag')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Kg/Bag {renderSortIndicator('kgPerBag')}
                 </th>
                 <th
                   onClick={() => handleSort('totalKg')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Total Kg {renderSortIndicator('totalKg')}
                 </th>
                 <th
                   onClick={() => handleSort('totalMt')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Total MT {renderSortIndicator('totalMt')}
                 </th>
-                <th className="py-2.5 px-3">Vehicle & Driver</th>
-                <th className="py-2.5 px-3 text-center">Status</th>
+                <th className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white`}>Vehicle & Driver</th>
+                <th className={`${thPadding} text-center font-semibold uppercase tracking-wider text-slate-100 dark:text-white`}>Status</th>
               </tr>
             </thead>
             <tbody
-              className={`divide-y divide-slate-100 dark:divide-slate-800/60 font-mono ${
+              className={`divide-y divide-slate-100 dark:divide-slate-800/60 ${
                 density === 'compact' ? 'text-xs' : density === 'normal' ? 'text-xs' : 'text-sm'
               }`}
             >
@@ -694,65 +622,60 @@ export const StockOutAllRecordsView: React.FC = () => {
                     <p className="font-medium text-sm text-slate-600 dark:text-slate-300">
                       No stock outbound delivery records found matching the filters
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      Try adjusting the search criteria or resetting filters
-                    </p>
                   </td>
                 </tr>
               ) : (
                 paginatedRows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                    className="odd:bg-white even:bg-slate-50/50 dark:odd:bg-slate-900 dark:even:bg-slate-850/40 hover:bg-sky-50/60 dark:hover:bg-sky-950/25 transition-colors group"
                   >
-                    <td className={`font-sans whitespace-nowrap text-slate-700 dark:text-slate-300 ${density === 'compact' ? 'py-1 px-3' : density === 'normal' ? 'py-2 px-3' : 'py-3 px-3'}`}>
+                    <td className={`font-mono whitespace-nowrap text-slate-700 dark:text-slate-300 ${tdPadding}`}>
                       {row.date}
                     </td>
-                    <td className="whitespace-nowrap font-bold text-amber-700 dark:text-amber-400">
+                    <td className={`whitespace-nowrap font-mono font-bold text-amber-700 dark:text-amber-400 ${tdPadding}`}>
                       {row.deliveryNo}
                     </td>
-                    <td className="font-sans whitespace-nowrap font-semibold text-slate-900 dark:text-slate-100">
+                    <td className={`font-sans whitespace-nowrap font-semibold text-slate-900 dark:text-slate-100 ${tdPadding}`}>
                       {row.clientReceiver}
                     </td>
-                    <td className="font-sans whitespace-nowrap text-slate-600 dark:text-slate-400">
+                    <td className={`font-sans whitespace-nowrap text-slate-600 dark:text-slate-400 ${tdPadding}`}>
                       <div className="flex items-center gap-1">
                         <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
                         <span>{row.destination}</span>
                       </div>
                     </td>
-                    <td className="font-sans whitespace-nowrap text-slate-700 dark:text-slate-300 font-medium">
+                    <td className={`font-sans whitespace-nowrap text-slate-900 dark:text-white font-medium ${tdPadding}`}>
                       {row.storage}
                     </td>
-                    <td className="font-sans whitespace-nowrap">
-                      <span className="inline-block px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50">
-                        {row.variety}
-                      </span>
+                    <td className={`font-sans whitespace-nowrap font-bold text-amber-800 dark:text-amber-300 ${tdPadding}`}>
+                      {row.variety}
                     </td>
-                    <td className="font-sans whitespace-nowrap text-slate-600 dark:text-slate-400">
+                    <td className={`font-sans whitespace-nowrap text-slate-600 dark:text-slate-400 ${tdPadding}`}>
                       {row.class}
                     </td>
-                    <td className="font-sans whitespace-nowrap">
+                    <td className={`font-sans whitespace-nowrap ${tdPadding}`}>
                       <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                         {row.grade}
                       </span>
                     </td>
-                    <td className="whitespace-nowrap text-right font-black text-amber-700 dark:text-amber-400">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums font-bold text-amber-700 dark:text-amber-400 ${tdPadding}`}>
                       {row.sackQuantity.toLocaleString()}
                     </td>
-                    <td className="whitespace-nowrap text-right text-slate-600 dark:text-slate-400">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums text-slate-600 dark:text-slate-400 ${tdPadding}`}>
                       {row.kgPerBag}
                     </td>
-                    <td className="whitespace-nowrap text-right font-semibold text-slate-700 dark:text-slate-300">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums font-semibold text-slate-700 dark:text-slate-300 ${tdPadding}`}>
                       {row.totalKg.toLocaleString()}
                     </td>
-                    <td className="whitespace-nowrap text-right font-bold text-sky-700 dark:text-sky-400">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums font-bold text-sky-700 dark:text-sky-400 ${tdPadding}`}>
                       {row.totalMt.toFixed(2)}
                     </td>
-                    <td className="font-sans whitespace-nowrap text-slate-600 dark:text-slate-400 text-[11px]">
+                    <td className={`font-sans whitespace-nowrap text-slate-600 dark:text-slate-400 text-[11px] ${tdPadding}`}>
                       <div>{row.vehicleNo}</div>
                       <div className="text-[10px] text-slate-400">{row.driverName}</div>
                     </td>
-                    <td className="whitespace-nowrap text-center">
+                    <td className={`whitespace-nowrap text-center ${tdPadding}`}>
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
                         <CheckCircle2 className="w-2.5 h-2.5" />
                         {row.status}
@@ -763,21 +686,21 @@ export const StockOutAllRecordsView: React.FC = () => {
               )}
             </tbody>
             {paginatedRows.length > 0 && (
-              <tfoot>
-                <tr className="bg-slate-100/90 dark:bg-slate-800/90 font-mono font-bold text-slate-900 dark:text-white border-t-2 border-slate-300 dark:border-slate-700 text-xs">
-                  <td colSpan={8} className="py-2.5 px-3 font-sans uppercase tracking-wider">
-                    FILTERED OUTBOUND TOTAL ({filteredDeliveries.length} Dispatches)
+              <tfoot className="bg-slate-100 dark:bg-slate-800/90 font-bold border-t-2 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs select-none">
+                <tr>
+                  <td colSpan={8} className={`${tdPadding} uppercase tracking-wider`}>
+                    TOTAL ({filteredDeliveries.length} DISPATCHES)
                   </td>
-                  <td className="py-2.5 px-3 text-right text-amber-700 dark:text-amber-400 font-black">
+                  <td className={`${tdPadding} text-right font-mono font-black text-amber-700 dark:text-amber-400`}>
                     {totalBags.toLocaleString()} Bags
                   </td>
-                  <td className="py-2.5 px-3 text-right text-slate-500">
+                  <td className={`${tdPadding} text-right font-mono text-slate-500`}>
                     avg {(totalKg / (totalBags || 1)).toFixed(1)}
                   </td>
-                  <td className="py-2.5 px-3 text-right">
+                  <td className={`${tdPadding} text-right font-mono`}>
                     {totalKg.toLocaleString()} Kg
                   </td>
-                  <td className="py-2.5 px-3 text-right text-sky-700 dark:text-sky-400 font-black">
+                  <td className={`${tdPadding} text-right font-mono font-black text-sky-700 dark:text-sky-400`}>
                     {totalMt.toFixed(2)} MT
                   </td>
                   <td colSpan={2}></td>

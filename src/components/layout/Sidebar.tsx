@@ -133,53 +133,49 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       ],
     },
     {
-      title: 'REPORT NAME',
+      title: 'REPORT',
       items: [
         {
-          keyId: 'stock-report',
-          label: '1. STOCK REPORT',
-          icon: BarChart3,
+          id: 'reports-stock-in',
+          label: 'STOCK IN ALL RECORDS',
+          icon: Boxes,
           permission: 'view_reports',
-          subItems: [
-            {
-              id: 'reports-stock-in',
-              label: 'STOCK IN ALL RECORDS',
-              icon: Boxes,
-            },
-            {
-              id: 'reports-stock-out',
-              label: 'STOCK OUT ALL RECORDS',
-              icon: Truck,
-            },
-            {
-              id: 'reports-closing-stock',
-              label: 'ALL ITEM CLOSING STOCK',
-              icon: Scale,
-            },
-            {
-              id: 'reports-stock-combined',
-              label: 'IN, OUT & STOCK COMBINED REPORT',
-              icon: GitCompare,
-            },
-          ],
         },
         {
-          keyId: 'challan-sr-report',
-          label: '2. KBL DELIVERY CHALLAN & STORE SR WISE REPORT',
-          icon: FileText,
+          id: 'reports-stock-out',
+          label: 'STOCK OUT ALL RECORDS',
+          icon: Truck,
           permission: 'view_reports',
-          subItems: [
-            {
-              id: 'reports-challan-wise',
-              label: 'KBL DELIVERY CHALLAN WISE REPORT',
-              icon: Files,
-            },
-            {
-              id: 'reports-sr-wise',
-              label: 'STORE SR WISE REPORT',
-              icon: FileCheck,
-            },
-          ],
+        },
+        {
+          id: 'reports-closing-stock',
+          label: 'ALL ITEM CLOSING STOCK',
+          icon: Scale,
+          permission: 'view_reports',
+        },
+        {
+          id: 'reports-in-out-all-records',
+          label: 'IN, OUT & STOCK ALL RECORDS',
+          icon: Layers,
+          permission: 'view_reports',
+        },
+        {
+          id: 'reports-challan-wise',
+          label: 'DELIVERY CHALLAN WISE',
+          icon: Files,
+          permission: 'view_reports',
+        },
+        {
+          id: 'reports-sr-wise',
+          label: 'STORE SR WISE ALL RECORDS',
+          icon: FileCheck,
+          permission: 'view_reports',
+        },
+        {
+          id: 'reports-stock-combined',
+          label: 'IN, OUT & STOCK COMBINED REPORT',
+          icon: GitCompare,
+          permission: 'view_reports',
         },
       ],
     },

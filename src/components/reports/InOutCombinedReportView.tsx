@@ -24,6 +24,8 @@ import { exportToExcel, exportToPdf } from '../../utils/exportUtils';
 import { sortData } from '../../utils/sortUtils';
 import { TablePagination } from '../common/TablePagination';
 import { PrintPreviewModal } from '../common/PrintPreviewModal';
+import { ReportButtonGroup } from '../common/ReportButtonGroup';
+import { DateRangePicker } from '../common/DateRangePicker';
 
 interface CombinedReportRow {
   id: string;
@@ -274,34 +276,32 @@ export const InOutCombinedReportView: React.FC = () => {
     addToast('Combined In/Out report exported to PDF!', 'success');
   };
 
+  const thPadding = density === 'compact' ? 'py-1 px-2.5 text-[10.5px]' : density === 'comfortable' ? 'py-2.5 px-3.5 text-xs' : 'py-1.5 px-3 text-[11px]';
+  const tdPadding = density === 'compact' ? 'py-1 px-2.5 text-[11px]' : density === 'comfortable' ? 'py-2.5 px-3.5 text-xs' : 'py-1.5 px-3 text-xs';
+
   const renderSortIndicator = (colKey: string) => {
     if (sortKey !== colKey) {
-      return <ArrowUpDown className="w-3 h-3 text-slate-400 group-hover:text-slate-600 transition-colors inline ml-1" />;
+      return <ArrowUpDown className="w-3 h-3 text-slate-400/70 group-hover:text-sky-300 inline ml-1" />;
     }
     return sortDir === 'asc' ? (
-      <ArrowUp className="w-3 h-3 text-sky-600 dark:text-sky-400 inline ml-1" />
+      <ArrowUp className="w-3.5 h-3.5 text-sky-400 bg-sky-950/60 p-0.5 rounded inline ml-1" />
     ) : (
-      <ArrowDown className="w-3 h-3 text-sky-600 dark:text-sky-400 inline ml-1" />
+      <ArrowDown className="w-3.5 h-3.5 text-sky-400 bg-sky-950/60 p-0.5 rounded inline ml-1" />
     );
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3 sm:space-y-3.5">
       {/* Header bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800 pb-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-4.5 bg-indigo-600 dark:bg-indigo-500 rounded-xs" />
-            <h1 className="text-base sm:text-lg font-black tracking-wider text-slate-900 dark:text-white uppercase">
-              IN, OUT & STOCK COMBINED REPORT
-            </h1>
-            <span className="px-2 py-0.5 text-[11px] font-bold rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-              {filteredData.length} Facility Lines
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Consolidated reconciliation statement comparing total stock receipts, outbound dispatches, and remaining stock
-          </p>
+      <div className="flex items-center justify-between gap-3 pt-0.5 pb-1 border-b border-slate-200/60 dark:border-slate-800/60">
+        <div className="flex items-center gap-2">
+          <div className="w-1.5 h-4.5 bg-indigo-500 rounded-xs" />
+          <h2 className="text-base sm:text-lg font-black tracking-wider text-slate-900 dark:text-white uppercase">
+            IN, OUT & STOCK COMBINED REPORT
+          </h2>
+          <span className="px-2 py-0.5 text-[11px] font-bold rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            {filteredData.length} Facilities
+          </span>
         </div>
 
         {/* Toolbar: Density & Export buttons */}
@@ -346,132 +346,105 @@ export const InOutCombinedReportView: React.FC = () => {
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={handleExportExcel}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-2xs cursor-pointer uppercase"
-            title="Export full filtered report to Excel"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">EXCEL</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsPreviewOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-colors shadow-2xs cursor-pointer uppercase"
-            title="Print Preview & PDF"
-          >
-            <Printer className="w-3.5 h-3.5 text-slate-500" />
-            <span className="hidden sm:inline">PRINT / PDF</span>
-          </button>
+          {/* Print and Export Button Group */}
+          <ReportButtonGroup
+            onPrint={() => setIsPreviewOpen(true)}
+            onExportExcel={handleExportExcel}
+            onExportPdf={handleExportPdf}
+          />
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">STOCK IN (BAGS)</span>
-            <Boxes className="w-4 h-4 text-emerald-600" />
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">STOCK IN</span>
+            <Boxes className="w-3.5 h-3.5 text-emerald-600" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">
             {totalInboundBags.toLocaleString()}
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            {totalInboundMt.toFixed(1)} MT Received
+          <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 mt-0.5 font-semibold">
+            {totalInboundMt.toFixed(1)} MT
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">STOCK OUT (BAGS)</span>
-            <Truck className="w-4 h-4 text-amber-600" />
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">STOCK OUT</span>
+            <Truck className="w-3.5 h-3.5 text-amber-600" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 mt-1 font-mono">
             {totalOutboundBags.toLocaleString()}
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            {totalOutboundMt.toFixed(1)} MT Dispatched
+          <div className="text-[10px] font-mono text-amber-600 dark:text-amber-400 mt-0.5 font-semibold">
+            {totalOutboundMt.toFixed(1)} MT
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">CLOSING (BAGS)</span>
-            <Warehouse className="w-4 h-4 text-emerald-600" />
+            <Warehouse className="w-3.5 h-3.5 text-emerald-600" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1 font-mono">
             {totalClosingBags.toLocaleString()}
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            Current Net Balance
-          </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">CLOSING (MT)</span>
-            <Scale className="w-4 h-4 text-sky-600" />
+            <Scale className="w-3.5 h-3.5 text-sky-600" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-sky-600 dark:text-sky-400 mt-1 font-mono">
             {totalClosingMt.toFixed(2)}
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            Metric Tons in Storage
-          </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">TURNOVER RATE</span>
-            <TrendingUp className="w-4 h-4 text-indigo-600" />
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">TURNOVER</span>
+            <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1 font-mono">
             {overallDispatchRate}%
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            Delivered vs Received
-          </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">ACTIVE LINES</span>
-            <PieChart className="w-4 h-4 text-purple-600" />
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">LINES</span>
+            <PieChart className="w-3.5 h-3.5 text-purple-600" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">
             {filteredData.length}
-          </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">
-            Storage & Variety Segments
           </div>
         </div>
       </div>
 
       {/* Advanced Filter Box */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-slate-900 border border-sky-200/80 dark:border-slate-800 rounded-xl p-3 shadow-xs space-y-2.5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-sky-600" />
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-              COMPREHENSIVE DATA FILTER & RECONCILIATION OPTIONS
-            </span>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+            <Filter className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+            <span>FILTERS</span>
           </div>
           {(searchQuery || selectedStorage || selectedVariety || startDate || endDate) && (
             <button
               type="button"
               onClick={resetFilters}
-              className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 cursor-pointer"
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 cursor-pointer uppercase"
             >
               <RotateCcw className="w-3 h-3" />
-              <span>RESET FILTERS</span>
+              <span>RESET</span>
             </button>
           )}
         </div>
 
         {/* Filter controls row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
           {/* Universal Search */}
           <div className="relative">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -524,102 +497,88 @@ export const InOutCombinedReportView: React.FC = () => {
               ))}
             </select>
           </div>
+        </div>
 
-          {/* Start Date */}
-          <div>
-            <input
-              type="date"
-              value={startDate}
-              placeholder="Start Date"
-              onChange={(e) => {
-                setStartDate(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="w-full py-1.5 px-2.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
-            />
-          </div>
-
-          {/* End Date */}
-          <div>
-            <input
-              type="date"
-              value={endDate}
-              placeholder="End Date"
-              onChange={(e) => {
-                setEndDate(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="w-full py-1.5 px-2.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
-            />
-          </div>
+        {/* Date Range Picker Component */}
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            label="Transaction Period:"
+            onChange={(start, end) => {
+              setStartDate(start);
+              setEndDate(end);
+              setCurrentPage(1);
+            }}
+          />
         </div>
       </div>
 
       {/* Main Table Container */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 border border-sky-200/90 dark:border-slate-800 rounded-xl shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left">
-            <thead>
-              <tr className="bg-slate-50/90 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider select-none">
+            <thead className="bg-slate-800 text-slate-100 dark:bg-slate-850 dark:text-white font-bold border-b-2 border-slate-900 dark:border-slate-700 select-none">
+              <tr>
                 <th
                   onClick={() => handleSort('storageName')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Cold Storage {renderSortIndicator('storageName')}
                 </th>
                 <th
                   onClick={() => handleSort('varietyName')}
-                  className="py-2.5 px-3 cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Potato Variety {renderSortIndicator('varietyName')}
                 </th>
                 <th
                   onClick={() => handleSort('inboundBags')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors text-emerald-700 dark:text-emerald-400"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Stock In (Bags) {renderSortIndicator('inboundBags')}
                 </th>
                 <th
                   onClick={() => handleSort('inboundMt')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Stock In (MT) {renderSortIndicator('inboundMt')}
                 </th>
                 <th
                   onClick={() => handleSort('outboundBags')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors text-amber-700 dark:text-amber-400"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Stock Out (Bags) {renderSortIndicator('outboundBags')}
                 </th>
                 <th
                   onClick={() => handleSort('outboundMt')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Stock Out (MT) {renderSortIndicator('outboundMt')}
                 </th>
                 <th
                   onClick={() => handleSort('closingBags')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors text-sky-700 dark:text-sky-400"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Closing Stock (Bags) {renderSortIndicator('closingBags')}
                 </th>
                 <th
                   onClick={() => handleSort('closingMt')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Closing MT {renderSortIndicator('closingMt')}
                 </th>
                 <th
                   onClick={() => handleSort('dispatchRate')}
-                  className="py-2.5 px-3 text-right cursor-pointer group hover:text-sky-600 transition-colors"
+                  className={`${thPadding} text-right font-semibold uppercase tracking-wider text-slate-100 dark:text-white cursor-pointer hover:bg-slate-700/60 dark:hover:bg-slate-800 transition-colors select-none`}
                 >
                   Turnover % {renderSortIndicator('dispatchRate')}
                 </th>
-                <th className="py-2.5 px-3 text-center">Movement Status</th>
+                <th className={`${thPadding} text-center font-semibold uppercase tracking-wider text-slate-100 dark:text-white`}>Status</th>
               </tr>
             </thead>
             <tbody
-              className={`divide-y divide-slate-100 dark:divide-slate-800/60 font-mono ${
+              className={`divide-y divide-slate-100 dark:divide-slate-800/60 ${
                 density === 'compact' ? 'text-xs' : density === 'normal' ? 'text-xs' : 'text-sm'
               }`}
             >
@@ -630,44 +589,39 @@ export const InOutCombinedReportView: React.FC = () => {
                     <p className="font-medium text-sm text-slate-600 dark:text-slate-300">
                       No matching combined stock records found
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      Try adjusting the search criteria or resetting filters
-                    </p>
                   </td>
                 </tr>
               ) : (
                 paginatedRows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                    className="odd:bg-white even:bg-slate-50/50 dark:odd:bg-slate-900 dark:even:bg-slate-850/40 hover:bg-sky-50/60 dark:hover:bg-sky-950/25 transition-colors group"
                   >
-                    <td className={`font-sans whitespace-nowrap text-slate-800 dark:text-slate-200 font-semibold ${density === 'compact' ? 'py-1 px-3' : density === 'normal' ? 'py-2 px-3' : 'py-3 px-3'}`}>
+                    <td className={`font-sans whitespace-nowrap text-slate-900 dark:text-white font-medium ${tdPadding}`}>
                       {row.storageName}
                     </td>
-                    <td className="font-sans whitespace-nowrap">
-                      <span className="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200 dark:border-sky-800/50">
-                        {row.varietyName}
-                      </span>
+                    <td className={`font-sans whitespace-nowrap font-bold text-sky-800 dark:text-sky-300 ${tdPadding}`}>
+                      {row.varietyName}
                     </td>
-                    <td className="whitespace-nowrap text-right font-black text-emerald-700 dark:text-emerald-400">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums font-bold text-emerald-700 dark:text-emerald-400 ${tdPadding}`}>
                       {row.inboundBags.toLocaleString()}
                     </td>
-                    <td className="whitespace-nowrap text-right text-slate-600 dark:text-slate-400">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums text-slate-600 dark:text-slate-400 ${tdPadding}`}>
                       {row.inboundMt.toFixed(2)}
                     </td>
-                    <td className="whitespace-nowrap text-right font-black text-amber-700 dark:text-amber-400">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums font-bold text-amber-700 dark:text-amber-400 ${tdPadding}`}>
                       {row.outboundBags.toLocaleString()}
                     </td>
-                    <td className="whitespace-nowrap text-right text-slate-600 dark:text-slate-400">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums text-slate-600 dark:text-slate-400 ${tdPadding}`}>
                       {row.outboundMt.toFixed(2)}
                     </td>
-                    <td className="whitespace-nowrap text-right font-black text-sky-700 dark:text-sky-400">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums font-bold text-sky-700 dark:text-sky-400 ${tdPadding}`}>
                       {row.closingBags.toLocaleString()}
                     </td>
-                    <td className="whitespace-nowrap text-right font-bold text-slate-700 dark:text-slate-300">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums font-bold text-slate-700 dark:text-slate-300 ${tdPadding}`}>
                       {row.closingMt.toFixed(2)}
                     </td>
-                    <td className="whitespace-nowrap text-right font-semibold text-slate-600 dark:text-slate-300">
+                    <td className={`whitespace-nowrap text-right font-mono tabular-nums font-semibold text-slate-600 dark:text-slate-300 ${tdPadding}`}>
                       <div className="flex items-center justify-end gap-1.5">
                         <span>{row.dispatchRate.toFixed(1)}%</span>
                         <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden inline-block">
@@ -684,7 +638,7 @@ export const InOutCombinedReportView: React.FC = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="whitespace-nowrap text-center">
+                    <td className={`whitespace-nowrap text-center ${tdPadding}`}>
                       <span
                         className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                           row.status === 'Fully Dispatched'
@@ -702,30 +656,30 @@ export const InOutCombinedReportView: React.FC = () => {
               )}
             </tbody>
             {paginatedRows.length > 0 && (
-              <tfoot>
-                <tr className="bg-slate-100/90 dark:bg-slate-800/90 font-mono font-bold text-slate-900 dark:text-white border-t-2 border-slate-300 dark:border-slate-700 text-xs">
-                  <td colSpan={2} className="py-2.5 px-3 font-sans uppercase tracking-wider">
-                    COMBINED RECONCILIATION TOTAL ({filteredData.length} Lines)
+              <tfoot className="bg-slate-100 dark:bg-slate-800/90 font-bold border-t-2 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs select-none">
+                <tr>
+                  <td colSpan={2} className={`${tdPadding} uppercase tracking-wider`}>
+                    TOTAL ({filteredData.length} FACILITIES)
                   </td>
-                  <td className="py-2.5 px-3 text-right text-emerald-700 dark:text-emerald-400 font-black">
+                  <td className={`${tdPadding} text-right font-mono font-black text-emerald-700 dark:text-emerald-400`}>
                     {totalInboundBags.toLocaleString()}
                   </td>
-                  <td className="py-2.5 px-3 text-right">
+                  <td className={`${tdPadding} text-right font-mono`}>
                     {totalInboundMt.toFixed(2)} MT
                   </td>
-                  <td className="py-2.5 px-3 text-right text-amber-700 dark:text-amber-400 font-black">
+                  <td className={`${tdPadding} text-right font-mono font-black text-amber-700 dark:text-amber-400`}>
                     {totalOutboundBags.toLocaleString()}
                   </td>
-                  <td className="py-2.5 px-3 text-right">
+                  <td className={`${tdPadding} text-right font-mono`}>
                     {totalOutboundMt.toFixed(2)} MT
                   </td>
-                  <td className="py-2.5 px-3 text-right text-sky-700 dark:text-sky-400 font-black">
+                  <td className={`${tdPadding} text-right font-mono font-black text-sky-700 dark:text-sky-400`}>
                     {totalClosingBags.toLocaleString()}
                   </td>
-                  <td className="py-2.5 px-3 text-right">
+                  <td className={`${tdPadding} text-right font-mono`}>
                     {totalClosingMt.toFixed(2)} MT
                   </td>
-                  <td className="py-2.5 px-3 text-right font-black text-indigo-700 dark:text-indigo-400">
+                  <td className={`${tdPadding} text-right font-mono font-black text-indigo-700 dark:text-indigo-400`}>
                     avg {overallDispatchRate}%
                   </td>
                   <td></td>

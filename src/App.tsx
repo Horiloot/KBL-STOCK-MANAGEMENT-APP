@@ -3,7 +3,6 @@ import { ExternalLink } from 'lucide-react';
 import { AppProvider, useApp } from './context/AppContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
-import { ToastContainer } from './components/common/ToastContainer';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
 
@@ -25,6 +24,7 @@ import { StockInAllRecordsView } from './components/reports/StockInAllRecordsVie
 import { StockOutAllRecordsView } from './components/reports/StockOutAllRecordsView';
 import { AllItemClosingStockView } from './components/reports/AllItemClosingStockView';
 import { InOutCombinedReportView } from './components/reports/InOutCombinedReportView';
+import { InOutStockAllRecordsView } from './components/reports/InOutStockAllRecordsView';
 import { KblDeliveryChallanWiseReportView } from './components/reports/KblDeliveryChallanWiseReportView';
 import { StoreSRWiseReportView } from './components/reports/StoreSRWiseReportView';
 import { StockReportView } from './components/reports/StockReportView';
@@ -45,8 +45,6 @@ const MainLayout: React.FC = () => {
     setIsDeliveryModalOpen,
     isImportModalOpen,
     setIsImportModalOpen,
-    toasts,
-    removeToast,
   } = useApp();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -73,6 +71,8 @@ const MainLayout: React.FC = () => {
         return <StockOutAllRecordsView />;
       case 'reports-closing-stock':
         return <AllItemClosingStockView />;
+      case 'reports-in-out-all-records':
+        return <InOutStockAllRecordsView />;
       case 'reports-stock-combined':
         return <InOutCombinedReportView />;
       case 'reports-challan-wise':
@@ -153,9 +153,6 @@ const MainLayout: React.FC = () => {
         isOpen={isDeliveryModalOpen}
         onClose={() => setIsDeliveryModalOpen(false)}
       />
-
-      {/* Global Notifications */}
-      <ToastContainer toasts={toasts} onClose={removeToast} />
     </div>
   );
 };

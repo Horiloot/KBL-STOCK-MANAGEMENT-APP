@@ -1,0 +1,305 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    background-color: #f8fafc;
+    color: #0f172a;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  html.dark body {
+    background-color: #020617;
+    color: #f8fafc;
+  }
+
+  :root {
+    --primary-hue: 200;
+    --primary-saturation: 90%;
+    --primary-lightness: 45%;
+    --color-primary: #0284c7;
+    --color-primary-hover: #0369a1;
+  }
+
+  [data-theme='corporate-light'] {
+    --color-primary: #0284c7;
+    --color-primary-hover: #0369a1;
+  }
+
+  [data-theme='corporate-dark'] {
+    --color-primary: #38bdf8;
+    --color-primary-hover: #0ea5e9;
+  }
+
+  [data-theme='ocean-blue'] {
+    --color-sky-50: var(--color-blue-50);
+    --color-sky-100: var(--color-blue-100);
+    --color-sky-200: var(--color-blue-200);
+    --color-sky-300: var(--color-blue-300);
+    --color-sky-400: var(--color-blue-400);
+    --color-sky-500: var(--color-blue-500);
+    --color-sky-600: var(--color-blue-600);
+    --color-sky-700: var(--color-blue-700);
+    --color-sky-800: var(--color-blue-800);
+    --color-sky-900: var(--color-blue-900);
+    --color-sky-950: var(--color-blue-950);
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+  }
+
+  [data-theme='emerald-green'] {
+    --color-sky-50: var(--color-emerald-50);
+    --color-sky-100: var(--color-emerald-100);
+    --color-sky-200: var(--color-emerald-200);
+    --color-sky-300: var(--color-emerald-300);
+    --color-sky-400: var(--color-emerald-400);
+    --color-sky-500: var(--color-emerald-500);
+    --color-sky-600: var(--color-emerald-600);
+    --color-sky-700: var(--color-emerald-700);
+    --color-sky-800: var(--color-emerald-800);
+    --color-sky-900: var(--color-emerald-900);
+    --color-sky-950: var(--color-emerald-950);
+    --color-primary: #059669;
+    --color-primary-hover: #047857;
+  }
+
+  [data-theme='royal-purple'] {
+    --color-sky-50: var(--color-violet-50);
+    --color-sky-100: var(--color-violet-100);
+    --color-sky-200: var(--color-violet-200);
+    --color-sky-300: var(--color-violet-300);
+    --color-sky-400: var(--color-violet-400);
+    --color-sky-500: var(--color-violet-500);
+    --color-sky-600: var(--color-violet-600);
+    --color-sky-700: var(--color-violet-700);
+    --color-sky-800: var(--color-violet-800);
+    --color-sky-900: var(--color-violet-900);
+    --color-sky-950: var(--color-violet-950);
+    --color-primary: #7c3aed;
+    --color-primary-hover: #6d28d9;
+  }
+
+  [data-theme='slate-gray'] {
+    --color-sky-50: var(--color-slate-50);
+    --color-sky-100: var(--color-slate-100);
+    --color-sky-200: var(--color-slate-200);
+    --color-sky-300: var(--color-slate-300);
+    --color-sky-400: var(--color-slate-400);
+    --color-sky-500: var(--color-slate-500);
+    --color-sky-600: var(--color-slate-600);
+    --color-sky-700: var(--color-slate-700);
+    --color-sky-800: var(--color-slate-800);
+    --color-sky-900: var(--color-slate-900);
+    --color-sky-950: var(--color-slate-950);
+    --color-primary: #475569;
+    --color-primary-hover: #334155;
+  }
+
+  [data-theme='modern-teal'] {
+    --color-sky-50: var(--color-teal-50);
+    --color-sky-100: var(--color-teal-100);
+    --color-sky-200: var(--color-teal-200);
+    --color-sky-300: var(--color-teal-300);
+    --color-sky-400: var(--color-teal-400);
+    --color-sky-500: var(--color-teal-500);
+    --color-sky-600: var(--color-teal-600);
+    --color-sky-700: var(--color-teal-700);
+    --color-sky-800: var(--color-teal-800);
+    --color-sky-900: var(--color-teal-900);
+    --color-sky-950: var(--color-teal-950);
+    --color-primary: #0d9488;
+    --color-primary-hover: #0f766e;
+  }
+
+  [data-theme='executive-navy'] {
+    --color-sky-50: var(--color-indigo-50);
+    --color-sky-100: var(--color-indigo-100);
+    --color-sky-200: var(--color-indigo-200);
+    --color-sky-300: var(--color-indigo-300);
+    --color-sky-400: var(--color-indigo-400);
+    --color-sky-500: var(--color-indigo-500);
+    --color-sky-600: var(--color-indigo-600);
+    --color-sky-700: var(--color-indigo-700);
+    --color-sky-800: var(--color-indigo-800);
+    --color-sky-900: var(--color-indigo-900);
+    --color-sky-950: var(--color-indigo-950);
+    --color-primary: #1e3a8a;
+    --color-primary-hover: #172554;
+  }
+
+  [data-theme='warm-sand'] {
+    --color-sky-50: var(--color-amber-50);
+    --color-sky-100: var(--color-amber-100);
+    --color-sky-200: var(--color-amber-200);
+    --color-sky-300: var(--color-amber-300);
+    --color-sky-400: var(--color-amber-400);
+    --color-sky-500: var(--color-amber-500);
+    --color-sky-600: var(--color-amber-600);
+    --color-sky-700: var(--color-amber-700);
+    --color-sky-800: var(--color-amber-800);
+    --color-sky-900: var(--color-amber-900);
+    --color-sky-950: var(--color-amber-950);
+    --color-primary: #b45309;
+    --color-primary-hover: #92400e;
+  }
+
+  [data-theme='high-contrast'] {
+    --color-sky-50: var(--color-zinc-50);
+    --color-sky-100: var(--color-zinc-100);
+    --color-sky-200: var(--color-zinc-200);
+    --color-sky-300: var(--color-zinc-300);
+    --color-sky-400: var(--color-zinc-400);
+    --color-sky-500: var(--color-zinc-500);
+    --color-sky-600: var(--color-zinc-600);
+    --color-sky-700: var(--color-zinc-700);
+    --color-sky-800: var(--color-zinc-800);
+    --color-sky-900: var(--color-zinc-900);
+    --color-sky-950: var(--color-zinc-950);
+    --color-primary: #000000;
+    --color-primary-hover: #1e293b;
+  }
+}
+
+/* Print optimizations */
+@media print {
+  .no-print,
+  nav,
+  aside,
+  header,
+  button:not(.allow-print),
+  .modal-backdrop:not(.printable-modal-wrapper),
+  .toast-container,
+  footer {
+    display: none !important;
+  }
+
+  div[class*="lg:pl-72"] {
+    padding-left: 0 !important;
+  }
+
+  body, #root, main {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 10pt !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Crucial: remove overflow clipping so table headers repeat on every page */
+  .overflow-x-auto,
+  .overflow-y-auto,
+  .overflow-hidden,
+  div {
+    overflow: visible !important;
+  }
+
+  .printable-modal-wrapper {
+    position: static !important;
+    inset: auto !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    backdrop-filter: none !important;
+  }
+
+  .printable-modal {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+  }
+
+  .printable-document-body {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Table header repeating on every printed page */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  tbody {
+    display: table-row-group !important;
+  }
+
+  tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  th, td {
+    color: #000000 !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .print-card {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    break-inside: avoid;
+  }
+
+  .print-header {
+    display: block !important;
+    margin-bottom: 24px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 2px solid #0f172a !important;
+  }
+
+  @page {
+    margin: 10mm;
+    size: auto;
+  }
+}
+
+@media screen {
+  .print-header {
+    display: none !important;
+  }
+}
+
+/* Hidden scrollbars across the application while preserving full smooth scrolling */
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+

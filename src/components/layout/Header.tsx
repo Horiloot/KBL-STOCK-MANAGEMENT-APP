@@ -59,11 +59,11 @@ const REPORT_DEFINITIONS: ReportDefinition[] = [
     keywords: ['closing stock', 'balance', 'all items', 'inventory', 'grade', 'variety'],
   },
   {
-    id: 'rep-stock-combined',
-    tab: 'reports-stock-combined',
-    title: 'IN, OUT & STOCK COMBINED REPORT',
-    description: 'Consolidated reconciliation ledger comparing inbound, outbound & closing balance',
-    keywords: ['combined', 'in out', 'reconciliation', 'ledger', 'stock turnover', 'summary'],
+    id: 'rep-in-out-all-records',
+    tab: 'reports-in-out-all-records',
+    title: 'IN, OUT & STOCK ALL RECORDS',
+    description: 'Chronological transaction movement ledger tracking receipts, dispatches & running balance',
+    keywords: ['in out all records', 'movements', 'ledger', 'all transactions', 'running balance', 'receipts'],
   },
   {
     id: 'rep-challan',
@@ -78,6 +78,13 @@ const REPORT_DEFINITIONS: ReportDefinition[] = [
     title: 'STORE SR WISE REPORT',
     description: 'Serial receipt lot registry, farmer batches, remaining balance & seed grade breakdown',
     keywords: ['sr', 'store sr', 'serial receipt', 'lot', 'grower', 'batch', 'farmer'],
+  },
+  {
+    id: 'rep-stock-combined',
+    tab: 'reports-stock-combined',
+    title: 'IN, OUT & STOCK COMBINED REPORT',
+    description: 'Consolidated reconciliation ledger comparing inbound, outbound & closing balance',
+    keywords: ['combined', 'in out', 'reconciliation', 'ledger', 'stock turnover', 'summary'],
   },
   {
     id: 'rep-storage',
@@ -351,7 +358,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
             <input
               ref={searchInputRef}
               type="text"
-              placeholder="Search stock entries, delivery records, or reports by ID or client name..."
+              placeholder=""
               value={searchQuery}
               onFocus={() => setIsSearchOpen(true)}
               onChange={(e) => {
@@ -595,25 +602,25 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
       {/* Right side: Quick Action Buttons, Theme, User Profile */}
       <div className="flex items-center gap-2 md:gap-3">
-        {/* Quick Action: কোল্ড স্টোরেজ স্টক in */}
+        {/* Quick Action: Stock In Entry */}
         {hasPermission('add_stock') && (
           <button
             onClick={() => setIsStockModalOpen(true)}
             className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-600 rounded-lg shadow-xs transition-colors cursor-pointer uppercase"
           >
             <PlusCircle className="w-3.5 h-3.5" />
-            <span>কোল্ড স্টোরেজ স্টক in</span>
+            <span>COLD STORAGE STOCK IN</span>
           </button>
         )}
 
-        {/* Quick Action: কোল্ড স্টোরেজ স্টক out */}
+        {/* Quick Action: Stock Out Entry */}
         {hasPermission('add_delivery') && (
           <button
             onClick={() => setIsDeliveryModalOpen(true)}
             className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer uppercase"
           >
             <Truck className="w-3.5 h-3.5 text-amber-500" />
-            <span>কোল্ড স্টোরেজ স্টক out</span>
+            <span>COLD STORAGE STOCK OUT</span>
           </button>
         )}
 
